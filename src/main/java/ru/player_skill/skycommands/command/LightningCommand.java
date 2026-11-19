@@ -57,7 +57,7 @@ public final class LightningCommand extends SkyCommand {
     private volatile String playerNotFound = "&cИгрок не найден.";
 
     public LightningCommand(SkyCommandsPlugin plugin) {
-    super(plugin, "lightning", "mylightning", "zap", "bolt", "arc", "volt");
+    super(plugin, "lightning", "mylightning", "zap", "bolt", "volt");
     }
 
     @Override
