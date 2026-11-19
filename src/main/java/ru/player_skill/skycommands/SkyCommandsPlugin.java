@@ -54,7 +54,8 @@ public final class SkyCommandsPlugin extends JavaPlugin {
                 return true;
             }
             // Зашитое в код сообщение — из конфига не читается.
-            sender.sendMessage("&e[&bSky&d-&aCommands&e] &fЯдро собственных команд для &aСервера SkyGame&f! Написано &7Alice AI &fпод руководством &7PlayeR_SkiLL&f.");
+            sender.sendMessage(colorize("&e[&bSky&d-&aCommands&e] &fЯдро собственных команд для "
+                    + "&aСервера SkyGame&f! Написано &7Alice AI &fпод руководством &7PlayeR_SkiLL&f."));
             return true;
         }
         return false;
