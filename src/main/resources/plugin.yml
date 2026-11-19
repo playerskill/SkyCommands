@@ -1,9 +1,0 @@
-name: SkyCommands
-version: 1.0.0
-main: ru.playerskill.skycommands.SkyCommands
-author: PlayeR_SkiLL und Alice AI
-
-permissions:
-  skycommands.lightning:
-    description: "Позволяет использовать команду /lightning"
-    default: false
