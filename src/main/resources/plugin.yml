@@ -11,7 +11,7 @@ commands:
   lightning:
     description: Удар молнией без урона (в точку взгляда или по игроку)
     usage: /lightning [ник]
-    aliases: [mylightning, zap, bolt, arc, volt]
+    aliases: [mylightning, zap, bolt, volt]
 
 permissions:
   skycommands.lightning:
