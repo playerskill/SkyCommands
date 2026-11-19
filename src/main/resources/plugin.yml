@@ -1,0 +1,18 @@
+name: SkyCommands
+main: ru.skygame.skycommands.SkyCommandsPlugin
+version: 1.0.0
+description: Плагин для собственных команд SkyGame
+author: Alice AI под руководством PlayeR_SkiLL
+
+commands:
+  skycommands:
+    description: Информация о SkyCommands
+    usage: /skycommands
+
+permissions:
+  skycommands.lightning:
+    description: Доступ к команде /lightning
+    default: false
+  skycommands.admin:
+    description: Перезагрузка конфига через /skycommands reload
+    default: op
