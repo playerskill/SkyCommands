@@ -30,12 +30,14 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
         registry.register(new LightningCommand(this));
         registry.start();
 
-        // Регистрируем исполнителя и таб-комплит для команд
-        getCommand("skycommands").setExecutor(this);
-        getCommand("skycommands").setTabCompleter(this);
-        
-        // Важно: команда lightning должна быть объявлена в plugin.yml с алиасами,
-        // иначе Bukkit не даст повесить на неё TabCompleter.
+        // Команда /skycommands
+        Command skyCmd = getCommand("skycommands");
+        if (skyCmd != null) {
+            skyCmd.setExecutor(this);
+            skyCmd.setTabCompleter(this);
+        }
+
+        // Команда /lightning — таб будет работать только если она объявлена в plugin.yml
         Command lightningCmd = getCommand("lightning");
         if (lightningCmd != null) {
             lightningCmd.setTabCompleter(this);
@@ -53,9 +55,10 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Важно: args — это массив String[], поэтому используем args.length
         if (command.getName().equalsIgnoreCase("skycommands")) {
-            if (args.length > 0 && "reload".equalsIgnoreCase(args)) {
+            if (args.length > 0 && "reload".equalsIgnoreCase(args[0])) {
                 if (!sender.hasPermission("skycommands.admin")) {
                     sender.sendMessage(prefix() + colorize(getConfig().getString(
                             "messages.no-permission",
@@ -76,27 +79,27 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String args) {
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         String cmdName = command.getName().toLowerCase();
 
-        // Таб для /skycommands
+        // Таб для /skycommands [reload]
         if (cmdName.equals("skycommands")) {
             if (args.length == 1) {
-                String input = args.toLowerCase();
+                String input = args[0].toLowerCase();
                 if ("reload".startsWith(input)) {
                     return Collections.singletonList("reload");
                 }
             }
-            return null; // Или Collections.emptyList(), если хочешь всегда пустой список
+            return null;
         }
 
-        // Таб для /lightning и её алиасов
+        // Таб для /lightning [ник игрока]
         if (cmdName.equals("lightning")) {
             // Подсказываем ник только если есть право бить по другим или игрок — оператор
             if (args.length == 1) {
                 if (sender.isOp() || sender.hasPermission("skycommands.lightning.otherplayer")) {
                     List<String> matches = new ArrayList<>();
-                    String input = args.toLowerCase();
+                    String input = args[0].toLowerCase();
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         if (p.getName().toLowerCase().startsWith(input)) {
                             matches.add(p.getName());
@@ -105,7 +108,6 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
                     return matches;
                 }
             }
-            // Если нет прав или args.length != 1 — ничего не предлагаем
             return Collections.emptyList();
         }
 
