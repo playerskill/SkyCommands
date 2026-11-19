@@ -1,0 +1,11 @@
+# SkyCommands — ядро игровых команд SkyGame
+
+# --- Lightning ---
+lightning:
+  enabled: true              # false — команда полностью отключается (не перехватывается)
+  cooldown-seconds: 5        # кулдаун между вызовами (0 — без кулдауна)
+  messages:
+    bolt: "&6⚡ &e%player% &6вызвал молнию!"
+    no-permission: "&cКоманда доступна только донатерам."
+    cooldown: "&cМолния будет доступна через %seconds% сек."
+    disabled: "&cСейчас команда /lightning отключена администратором."
