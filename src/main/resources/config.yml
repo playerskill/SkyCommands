@@ -18,9 +18,12 @@ commands:
     enabled: true                       # тумблер команды
     permission: "skycommands.lightning" # право доступа
     cooldown-seconds: 5                 # кулдаун между ударами (0 — без кулдауна)
+    strike-distance: 120
     show-message: true                  # показывать ли сообщение "Вы ударили молнией"
     message: "&eВы ударили молнией!"
+    message-other: "&eВы ударили молнией по игроку &f%player%&e!"
     cooldown-message: "&cМолния будет доступна через %seconds% сек."
+    player-not-found: "&cИгрок не найден."
     # Раскомментируй, чтобы заменить стандартное no-permission
     # только для этой команды:
     # permission-required: "&cМолния доступна только донатерам!"
