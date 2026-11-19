@@ -1,3 +1,4 @@
+
 package ru.player_skill.skycommands;
 
 import org.bukkit.ChatColor;
@@ -40,7 +41,6 @@ public final class SkyCommandsPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Важно: args — это массив String[], поэтому используем args.length
         if (command.getName().equalsIgnoreCase("skycommands")) {
             if (args.length > 0 && "reload".equalsIgnoreCase(args[0])) {
                 if (!sender.hasPermission("skycommands.admin")) {
@@ -54,7 +54,7 @@ public final class SkyCommandsPlugin extends JavaPlugin {
                 sender.sendMessage(prefix() + colorize("&aКонфиг SkyCommands перезагружен."));
                 return true;
             }
-            // Сообщение о плагине
+            // Зашитое в код сообщение — из конфига не читается.
             sender.sendMessage(colorize("&e[&bSky&d-&aCommands&e] &fЯдро собственных команд для "
                     + "&aСервера SkyGame&f! Написано &7Alice AI &fпод руководством &7PlayeR_SkiLL&f."));
             return true;
