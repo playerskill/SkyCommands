@@ -1,3 +1,4 @@
+
 package ru.player_skill.skycommands.command;
 
 import org.bukkit.ChatColor;
@@ -62,6 +63,10 @@ public abstract class SkyCommand {
     }
 
     public boolean hasAccess(Player player) {
+        // Оператор всегда имеет доступ к командам плагина.
+        if (player.isOp()) {
+            return true;
+        }
         return permission == null || permission.isEmpty() || player.hasPermission(permission);
     }
 
