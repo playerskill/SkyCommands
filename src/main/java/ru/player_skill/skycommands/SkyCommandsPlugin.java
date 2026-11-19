@@ -17,8 +17,6 @@ import java.util.List;
 
 /**
  * SkyCommands — ядро игровых команд SkyGame.
- * В отличие от SkyControl не содержит механик и фиксов:
- * только перехватываемые игровые команды с тумблерами в конфиге.
  */
 public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter {
 
@@ -32,14 +30,21 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
         registry.register(new LightningCommand(this));
         registry.start();
 
+        // Регистрируем исполнителя и таб-комплит для команд
         getCommand("skycommands").setExecutor(this);
         getCommand("skycommands").setTabCompleter(this);
-        getCommand("lightning").setTabCompleter(this);
+        
+        // Важно: команда lightning должна быть объявлена в plugin.yml с алиасами,
+        // иначе Bukkit не даст повесить на неё TabCompleter.
+        Command lightningCmd = getCommand("lightning");
+        if (lightningCmd != null) {
+            lightningCmd.setTabCompleter(this);
+        }
 
         getLogger().info("SkyCommands запущен: зарегистрировано команд — " + registry.size() + ".");
     }
 
-    в─▌@Override
+    @Override
     public void onDisable() {
         if (registry != null) {
             registry.shutdown();
@@ -48,10 +53,10 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String args) {
         if (command.getName().equalsIgnoreCase("skycommands")) {
-            if (args.length > 0 && "reload".equalsIgnoreCase(args[0])) {
-                if (!sender.hasPermission(" inserted skycommands.admin")) {
+            if (args.length > 0 && "reload".equalsIgnoreCase(args)) {
+                if (!sender.hasPermission("skycommands.admin")) {
                     sender.sendMessage(prefix() + colorize(getConfig().getString(
                             "messages.no-permission",
                             "&cУ вас нет прав для выполнения этой команды.")));
@@ -62,7 +67,7 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
                 sender.sendMessage(prefix() + colorize("&aКонфиг SkyCommands перезагружен."));
                 return true;
             }
-            // Зашитое в код сообщение — из конфига не должно читаться.
+            // Сообщение о плагине
             sender.sendMessage(colorize("&e[&bSky&d-&aCommands&e] &fЯдро собственных команд для "
                     + "&aСервера SkyGame&f! Написано &7Alice AI &fпод руководством &7PlayeR_SkiLL&f."));
             return true;
@@ -71,27 +76,36 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (command.getName().equalsIgnoreCase("skycommands")) {
-            List<String> result = new ArrayList<String>();
-            if (args.length == 1 && "reload".startsWith(args[0].toLowerCase())) {
-                result.add("reload");
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String args) {
+        String cmdName = command.getName().toLowerCase();
+
+        // Таб для /skycommands
+        if (cmdName.equals("skycommands")) {
+            if (args.length == 1) {
+                String input = args.toLowerCase();
+                if ("reload".startsWith(input)) {
+                    return Collections.singletonList("reload");
+                }
             }
-            return result;
+            return null; // Или Collections.emptyList(), если хочешь всегда пустой список
         }
 
-        if (command.getName().equalsIgnoreCase("lightning")) {
-            // Ник подсказываем только тем, кто вообще может бить по другим.
-            if (args.length == 1 && (sender.isOp()
-                    || sender.hasPermission("skycommands.lightning.otherplayer"))) {
-                List<String> names = new ArrayList<String>();
-                for (Player online : Bukkit.getOnlinePlayers()) {
-                    if (online.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
-                        names.add(online.getName());
- player по
+        // Таб для /lightning и её алиасов
+        if (cmdName.equals("lightning")) {
+            // Подсказываем ник только если есть право бить по другим или игрок — оператор
+            if (args.length == 1) {
+                if (sender.isOp() || sender.hasPermission("skycommands.lightning.otherplayer")) {
+                    List<String> matches = new ArrayList<>();
+                    String input = args.toLowerCase();
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        if (p.getName().toLowerCase().startsWith(input)) {
+                            matches.add(p.getName());
+                        }
+                    }
+                    return matches;
                 }
-                return names;
             }
+            // Если нет прав или args.length != 1 — ничего не предлагаем
             return Collections.emptyList();
         }
 
@@ -99,5 +113,10 @@ public final class SkyCommandsPlugin extends JavaPlugin implements TabCompleter 
     }
 
     public String prefix() {
-        return corrupted
+        return colorize(getConfig().getString("messages.prefix", ""));
     }
+
+    public String colorize(String raw) {
+        return ChatColor.translateAlternateColorCodes('&', raw);
+    }
+}
