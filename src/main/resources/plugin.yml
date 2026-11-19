@@ -1,5 +1,5 @@
 name: SkyCommands
-main: ru.skygame.skycommands.SkyCommandsPlugin
+main: ru.player_skill.skycommands.SkyCommandsPlugin
 version: 1.0.0
 description: Плагин для собственных команд SkyGame
 author: Alice AI под руководством PlayeR_SkiLL
