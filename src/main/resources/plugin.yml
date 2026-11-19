@@ -8,11 +8,18 @@ commands:
   skycommands:
     description: Информация о SkyCommands
     usage: /skycommands
+  lightning:
+    description: Удар молнией без урона (в точку взгляда или по игроку)
+    usage: /lightning [ник]
+    aliases: [mylightning, zap, bolt, arc, volt]
 
 permissions:
   skycommands.lightning:
     description: Доступ к команде /lightning
     default: false
+  skycommands.lightning.otherplayer:
+    description: Удар молнией по другому игроку (/lightning ник)
+    default: op
   skycommands.admin:
     description: Перезагрузка конфига через /skycommands reload
     default: op
