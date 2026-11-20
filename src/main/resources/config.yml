@@ -7,7 +7,7 @@
 
 messages:
   # Префикс для всех сообщений команд
-  prefix: "&e[&bSky&d-&aCommands&e] &r"
+  prefix: "&e[&bSky&d-&aCommands&e] &r" # Заполнитель %prefix%
   # Стандартное сообщение об отсутствии прав —
   # общее для всех команд. Если у конкретной команды
   # в её секции задан error-message — используется он.
@@ -18,7 +18,7 @@ commands:
     enabled: true                       # тумблер команды
     permission: "skycommands.lightning" # право доступа
     cooldown-seconds: 5                 # кулдаун между ударами (0 — без кулдауна)
-    strike-distance: 120
+    strike-distance: 120                # Расстояние, на которое бьёт молния
     show-message: true                  # показывать ли сообщение "Вы ударили молнией"
     message: "&eВы ударили молнией!"
     message-other: "&eВы ударили молнией по игроку &f%player%&e!"
@@ -26,4 +26,4 @@ commands:
     player-not-found: "&cИгрок не найден."
     # Раскомментируй, чтобы заменить стандартное no-permission
     # только для этой команды:
-    # permission-required: "&cМолния доступна только донатерам!"
+    # permission-required: "%prefix% &cМолния доступна только донатерам!"
