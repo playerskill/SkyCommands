@@ -1,4 +1,3 @@
-
 package ru.player_skill.skycommands.command;
 
 import org.bukkit.ChatColor;
@@ -79,7 +78,9 @@ public abstract class SkyCommand {
             text = plugin.getConfig().getString("messages.no-permission",
                     "&cУ вас нет прав для выполнения этой команды.");
         }
-        player.sendMessage(plugin.prefix() + colorize(text));
+        // Префикс больше не приклеивается автоматически —
+        // он подставляется плейсхолдером %prefix% внутри самого текста.
+        player.sendMessage(plugin.format(text));
     }
 
     protected String colorize(String raw) {
