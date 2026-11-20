@@ -1,4 +1,3 @@
-
 package ru.player_skill.skycommands;
 
 import org.bukkit.ChatColor;
@@ -44,22 +43,31 @@ public final class SkyCommandsPlugin extends JavaPlugin {
         if (command.getName().equalsIgnoreCase("skycommands")) {
             if (args.length > 0 && "reload".equalsIgnoreCase(args[0])) {
                 if (!sender.hasPermission("skycommands.admin")) {
-                    sender.sendMessage(prefix() + colorize(getConfig().getString(
+                    sender.sendMessage(format(getConfig().getString(
                             "messages.no-permission",
                             "&cУ вас нет прав для выполнения этой команды.")));
                     return true;
                 }
                 reloadConfig();
                 registry.reload();
-                sender.sendMessage(prefix() + colorize("&aКонфиг SkyCommands перезагружен."));
+                sender.sendMessage(format("&aКонфиг SkyCommands перезагружен."));
                 return true;
             }
             // Зашитое в код сообщение — из конфига не читается.
-            sender.sendMessage(colorize("&e[&bSky&d-&aCommands&e] &fЯдро собственных команд для "
-                    + "&aСервера SkyGame&f! Написано &7Alice AI &fпод руководством &7PlayeR_SkiLL&f."));
+            sender.sendMessage(format("%prefix%&fЯдро собственных команд для &aСервера SkyGame&f! "
+                    + "Написано &7Alice AI &fпод руководством &7PlayeR_SkiLL&f."));
             return true;
         }
         return false;
+    }
+
+    /**
+     * Готовит сообщение к отправке: подставляет %prefix% из конфига
+     * и переводит цветовые коды &x в настоящие цвета.
+     */
+    public String format(String raw) {
+        String text = raw.replace("%prefix%", getConfig().getString("messages.prefix", ""));
+        return colorize(text);
     }
 
     public String prefix() {
