@@ -50,7 +50,10 @@ public final class SkyCommandsPlugin extends JavaPlugin {
                 }
                 reloadConfig();
                 registry.reload();
-                sender.sendMessage(format("&aКонфиг SkyCommands перезагружен."));
+                // Теперь текст читается из конфига: messages.config-reloaded
+                sender.sendMessage(format(getConfig().getString(
+                        "messages.config-reloaded",
+                        "&aКонфиг SkyCommands перезагружен.")));
                 return true;
             }
             // Зашитое в код сообщение — из конфига не читается.
