@@ -1,4 +1,3 @@
-
 package ru.player_skill.skycommands.command;
 
 import org.bukkit.Location;
@@ -14,7 +13,11 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * /lightning (алиас /mylightning) — молния как в Essentials, но без урона.
+ * /lightning (алиасы /mylightning, /zap, /bolt, /volt) — молния как
+ * в Essentials, но без урона.
+ *
+ * Все сообщения поддерживают плейсхолдер %prefix% — префикс из messages.prefix
+ * подставляется там, где он написан, а не приклеивается автоматически.
  *
  * Без аргументов: удар в точку, куда смотрит игрок. Луч идёт от глаз до
  * strike-distance блоков: попали в блок — молния в него, смотрим в небо —
@@ -57,7 +60,7 @@ public final class LightningCommand extends SkyCommand {
     private volatile String playerNotFound = "&cИгрок не найден.";
 
     public LightningCommand(SkyCommandsPlugin plugin) {
-    super(plugin, "lightning", "mylightning", "zap", "bolt", "volt");
+        super(plugin, "lightning", "mylightning", "zap", "bolt", "volt");
     }
 
     @Override
@@ -89,8 +92,8 @@ public final class LightningCommand extends SkyCommand {
                 long elapsed = (now - previous) / 1000L;
                 if (elapsed < cooldownSeconds) {
                     long remain = cooldownSeconds - elapsed;
-                    player.sendMessage(plugin.prefix()
-                            + colorize(cooldownMessage.replace("%seconds%", String.valueOf(remain))));
+                    player.sendMessage(plugin.format(
+                            cooldownMessage.replace("%seconds%", String.valueOf(remain))));
                     return;
                 }
             }
@@ -102,7 +105,7 @@ public final class LightningCommand extends SkyCommand {
         if (args.length > 0) {
             // Удар по другому игроку — нужна отдельная правка (оператор проходит всегда).
             if (!player.isOp() && !player.hasPermission(PERMISSION_OTHER)) {
-                player.sendMessage(plugin.prefix() + colorize(plugin.getConfig().getString(
+                player.sendMessage(plugin.format(plugin.getConfig().getString(
                         "messages.no-permission",
                         "&cУ вас нет прав для выполнения этой команды.")));
                 return;
@@ -114,14 +117,14 @@ public final class LightningCommand extends SkyCommand {
                 victim = matchPlayer(args[0]);
             }
             if (victim == null) {
-                player.sendMessage(plugin.prefix() + colorize(playerNotFound));
+                player.sendMessage(plugin.format(playerNotFound));
                 return;
             }
 
             strike(victim.getLocation());
 
             if (showMessage) {
-                player.sendMessage(plugin.prefix() + colorize(messageOther.replace("%player%", victim.getName())));
+                player.sendMessage(plugin.format(messageOther.replace("%player%", victim.getName())));
             }
             plugin.getLogger().info("Игрок " + player.getName() + " ударил молнией по игроку "
                     + victim.getName() + ".");
@@ -133,7 +136,7 @@ public final class LightningCommand extends SkyCommand {
         strike(target);
 
         if (showMessage) {
-            player.sendMessage(plugin.prefix() + colorize(message));
+            player.sendMessage(plugin.format(message));
         }
         plugin.getLogger().info("Игрок " + player.getName() + " ударил молнией.");
     }
