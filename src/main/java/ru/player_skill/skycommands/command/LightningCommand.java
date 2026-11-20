@@ -32,9 +32,9 @@ import java.util.UUID;
  *
  * Ключи конфига (commands.lightning):
  *   enabled               — тумблер команды (общий, читается в SkyCommand)
- *   permission            — право доступа (общее, читается в SkyCommand)
+ *   permission            — право доступа (общий, читается в SkyCommand)
  *   permission-required   — своё сообщение вместо общего no-permission
- *                           (общее, читается в SkyCommand)
+ *                           (общий, читается в SkyCommand)
  *   cooldown-seconds      — кулдаун между ударами (0 — без кулдауна)
  *   strike-distance       — дальность прицеливания взглядом (в блоках)
  *   show-message          — показывать ли сообщение после удара
@@ -84,7 +84,7 @@ public final class LightningCommand extends SkyCommand {
 
     @Override
     protected void execute(Player player, String[] args) {
-        // Кулдаун: проверка до удара, запись — только если удар разрешён.
+        // Сначала проверяем кулдаун, но НЕ ставим его, пока не будет реального удара
         if (cooldownSeconds > 0L) {
             long now = System.currentTimeMillis();
             Long previous = cooldowns.get(player.getUniqueId());
@@ -97,13 +97,13 @@ public final class LightningCommand extends SkyCommand {
                     return;
                 }
             }
-            cooldowns.put(player.getUniqueId(), now);
+            // Таймер пока НЕ ставим: запишем только после реального удара
         }
 
         Location target;
 
         if (args.length > 0) {
-            // Удар по другому игроку — нужна отдельная правка (оператор проходит всегда).
+            // Проверка прав на удар по другому игроку
             if (!player.isOp() && !player.hasPermission(PERMISSION_OTHER)) {
                 player.sendMessage(plugin.format(plugin.getConfig().getString(
                         "messages.no-permission",
@@ -113,14 +113,15 @@ public final class LightningCommand extends SkyCommand {
 
             Player victim = plugin.getServer().getPlayerExact(args[0]);
             if (victim == null) {
-                // На всякий случай — совпадение по началу ника, как в командах Minecraft.
                 victim = matchPlayer(args[0]);
             }
             if (victim == null) {
+                // Ошибка: игрок не найден — таймера НЕ будет
                 player.sendMessage(plugin.format(playerNotFound));
                 return;
             }
 
+            // Только здесь — реальный удар
             strike(victim.getLocation());
 
             if (showMessage) {
@@ -128,10 +129,15 @@ public final class LightningCommand extends SkyCommand {
             }
             plugin.getLogger().info("Игрок " + player.getName() + " ударил молнией по игроку "
                     + victim.getName() + ".");
+
+            // Ставим таймер только после реального удара
+            if (cooldownSeconds > 0L) {
+                cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
+            }
             return;
         }
 
-        // Удар в точку взгляда — как в Essentials.
+        // Удар в точку взгляда
         target = locateBySight(player);
         strike(target);
 
@@ -139,6 +145,11 @@ public final class LightningCommand extends SkyCommand {
             player.sendMessage(plugin.format(message));
         }
         plugin.getLogger().info("Игрок " + player.getName() + " ударил молнией.");
+
+        // Ставим таймер только после реального удара
+        if (cooldownSeconds > 0L) {
+            cooldowns.put(player.getUniqueId(), System.currentTimeMillis());
+        }
     }
 
     /**
