@@ -11,19 +11,20 @@ messages:
   # Стандартное сообщение об отсутствии прав —
   # общее для всех команд. Если у конкретной команды
   # в её секции задан error-message — используется он.
-  no-permission: "&cУ вас нет прав для выполнения этой команды."
+  no-permission: "%prefix% &cУ вас нет прав для выполнения этой команды."
+  config-reloaded: "%prefix% &aКонфиг перезагружен"
 
 commands:
   lightning:
     enabled: true                       # тумблер команды
     permission: "skycommands.lightning" # право доступа
-    cooldown-seconds: 5                 # кулдаун между ударами (0 — без кулдауна)
+    cooldown-seconds: 3                 # кулдаун между ударами (0 — без кулдауна)
     strike-distance: 120                # Расстояние, на которое бьёт молния
     show-message: true                  # показывать ли сообщение "Вы ударили молнией"
-    message: "&eВы ударили молнией!"
-    message-other: "&eВы ударили молнией по игроку &f%player%&e!"
-    cooldown-message: "&cМолния будет доступна через %seconds% сек."
-    player-not-found: "&cИгрок не найден."
+    message: "&e[&b⚡&e] &bМолния ударила!"
+    message-other: "&e[&b⚡&e] &bМолния ударила в &6%player%&b!"
+    cooldown-message: "&e[&b⚡&e] &cВаша молния перезаряжается ещё &6%seconds% &cсекунд."
+    player-not-found: "&e[&b⚡&e] &cИгрок не найден."
     # Раскомментируй, чтобы заменить стандартное no-permission
     # только для этой команды:
     # permission-required: "%prefix% &cМолния доступна только донатерам!"
