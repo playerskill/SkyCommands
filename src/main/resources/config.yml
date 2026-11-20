@@ -12,7 +12,7 @@ messages:
   # общее для всех команд. Если у конкретной команды
   # в её секции задан error-message — используется он.
   no-permission: "%prefix% &cУ вас нет прав для выполнения этой команды."
-  config-reloaded: "%prefix% &aКонфиг перезагружен"
+  config-reloaded: "%prefix% &aКонфигурация перезагружена!"
 
 commands:
   lightning:
